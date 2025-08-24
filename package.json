@@ -1,0 +1,10 @@
+{
+  "name": "playcade-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npm start --prefix backend",
+    "dev:backend": "npm start --prefix backend",
+    "sequelize": "npm run --prefix backend sequelize"
+  }
+}
