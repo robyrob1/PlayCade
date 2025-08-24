@@ -13,11 +13,17 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
+
 if (!isProduction) {
   app.use(cors({ origin: true, credentials: true }));
 } else {
-
+ 
+  app.use(cors({
+    origin: process.env.FRONTEND_ORIGIN, 
+    credentials: true
+  }));
 }
+
 app.use(helmet({ crossOriginResourcePolicy: false }));
 
 app.use(routes);
@@ -29,7 +35,7 @@ app.use((_req, _res, next) => {
   next(err);
 });
 
-
+// Error handler
 app.use((err, _req, res, _next) => {
   res.status(err.status || 500);
   res.json({
@@ -39,7 +45,6 @@ app.use((err, _req, res, _next) => {
     stack: isProduction ? null : err.stack
   });
 });
-
 
 initDb();
 

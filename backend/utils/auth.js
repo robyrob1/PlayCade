@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../db/models');
 const secret = process.env.JWT_SECRET || 'dev_secret';
-const expiresIn = parseInt(process.env.JWT_EXPIRES_IN || '604800'); // 7 days
+const expiresIn = parseInt(process.env.JWT_EXPIRES_IN || '604800'); 
 
 const setTokenCookie = (res, user) => {
   const safeUser = { id: user.id, email: user.email, username: user.username };
@@ -11,7 +11,7 @@ const setTokenCookie = (res, user) => {
     maxAge: expiresIn * 1000,
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax' // for cross-site cookies on HTTPS
+    sameSite: isProduction ? 'None' : 'Lax' 
   });
   return token;
 };

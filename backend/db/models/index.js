@@ -3,7 +3,11 @@ const { Sequelize, DataTypes } = require('sequelize');
 const databaseUrl = process.env.DATABASE_URL || 'sqlite:./db/dev.sqlite';
 const sequelize = new Sequelize(databaseUrl, {
   logging: false,
-  dialectOptions: process.env.DATABASE_URL?.startsWith('postgres') ? { ssl: process.env.NODE_ENV==='production' ? { require: true, rejectUnauthorized: false } : false } : {}
+  dialectOptions: process.env.DATABASE_URL?.startsWith('postgres')
+    ? (process.env.NODE_ENV === 'production'
+        ? { ssl: { require: true, rejectUnauthorized: false } }
+        : false)
+    : {}
 });
 
 const User = sequelize.define('User', {
@@ -57,7 +61,9 @@ Game.hasMany(Comment, { foreignKey: 'gameId' });
 Comment.belongsTo(Game, { foreignKey: 'gameId' });
 
 async function initDb() {
-  await sequelize.sync();
+  if (process.env.NODE_ENV !== 'production') {
+    await sequelize.sync();
+  }
 }
 
 module.exports = { sequelize, Sequelize, User, Game, Tag, GameTag, Review, Comment, initDb };
