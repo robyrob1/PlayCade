@@ -17,12 +17,6 @@ router.get('/', async (_req, res) => {
   res.json({ tags });
 });
 
-router.get('/:id', async (req, res, next) => {
-  const tag = await Tag.findByPk(req.params.id);
-  if (!tag) { const err = new Error('Not found'); err.status=404; return next(err); }
-  res.json({ tag });
-});
-
 router.post('/', requireAuth, validateTag, async (req, res) => {
   const tag = await Tag.create(req.body);
   res.status(201).json({ tag });

@@ -1,13 +1,16 @@
 const { validationResult } = require('express-validator');
+
 const handleValidationErrors = (req, _res, next) => {
   const validationErrors = validationResult(req);
   if (!validationErrors.isEmpty()) {
-    const errors = {};
-    validationErrors.array().forEach(e => errors[e.path] = e.msg);
-    const err = Error('Bad request.');
-    err.errors = errors; err.status = 400; err.title = 'Bad request.';
-    next(err);
+    const err = new Error('Validation error');
+    err.errors = {};
+    validationErrors.array().forEach(e => err.errors[e.param] = e.msg);
+    err.status = 400;
+    err.title = 'Bad request';
+    return next(err);
   }
   next();
 };
+
 module.exports = { handleValidationErrors };
