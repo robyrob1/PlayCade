@@ -8,8 +8,8 @@ module.exports = {
     storage: './db/dev.sqlite',
     migrationStorageTableName: 'sequelize_meta',
     seederStorageTableName: 'sequelize_data',
-    migrations: path.resolve(__dirname, '../db/migrations'),
-    seeders: path.resolve(__dirname, '../db/seeders')
+    migrationStoragePath: path.resolve(__dirname, '../db/migrations'),
+    seederStoragePath: path.resolve(__dirname, '../db/seeders')
   },
   production: {
     url: process.env.DATABASE_URL,
@@ -22,7 +22,7 @@ module.exports = {
     },
     migrationStorageTableName: 'sequelize_meta',
     seederStorageTableName: 'sequelize_data',
-    migrations: path.resolve(__dirname, '../db/migrations'),
-    seeders: path.resolve(__dirname, '../db/seeders')
+    migrationStoragePath: path.resolve(__dirname, '../db/migrations'),
+    seederStoragePath: path.resolve(__dirname, '../db/seeders')
   }
 };
