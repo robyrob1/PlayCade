@@ -1,32 +1,32 @@
-const BASE = import.meta.env.VITE_API_BASE_URL || '';  // e.g. https://playcade.onrender.com/api
+const API_BASE_URL = __API_BASE_URL__;
 
-async function handle(res) {
+async function apiFetch(path, options = {}) {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    }
+  });
+
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `HTTP ${res.status}`);
+    let error;
+    try {
+      error = await res.json();
+    } catch {
+      error = { message: res.statusText };
+    }
+    throw error;
   }
-  const text = await res.text();
-  return text ? JSON.parse(text) : {};
+
+  return res.json();
 }
 
-export const apiGet = (url) =>
-  fetch(BASE + url, { credentials: 'include' }).then(handle);
-
-export const apiPost = (url, body) =>
-  fetch(BASE + url, {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  }).then(handle);
-
-export const apiPut = (url, body) =>
-  fetch(BASE + url, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  }).then(handle);
-
-export const apiDelete = (url) =>
-  fetch(BASE + url, { method: 'DELETE', credentials: 'include' }).then(handle);
+export const apiGet = (path) => apiFetch(path);
+export const apiPost = (path, body) =>
+  apiFetch(path, { method: 'POST', body: JSON.stringify(body) });
+export const apiPut = (path, body) =>
+  apiFetch(path, { method: 'PUT', body: JSON.stringify(body) });
+export const apiDelete = (path) =>
+  apiFetch(path, { method: 'DELETE' });
