@@ -1,10 +1,15 @@
 require('dotenv').config();
+const path = require('path');
 
 module.exports = {
   development: {
     url: process.env.DATABASE_URL || 'sqlite:./db/dev.sqlite',
     dialect: 'sqlite',
-    storage: './db/dev.sqlite'
+    storage: './db/dev.sqlite',
+    migrationStorageTableName: 'sequelize_meta',
+    seederStorageTableName: 'sequelize_data',
+    migrations: path.resolve(__dirname, '../db/migrations'),
+    seeders: path.resolve(__dirname, '../db/seeders')
   },
   production: {
     url: process.env.DATABASE_URL,
@@ -14,6 +19,10 @@ module.exports = {
         require: true,
         rejectUnauthorized: false
       }
-    }
+    },
+    migrationStorageTableName: 'sequelize_meta',
+    seederStorageTableName: 'sequelize_data',
+    migrations: path.resolve(__dirname, '../db/migrations'),
+    seeders: path.resolve(__dirname, '../db/seeders')
   }
 };
