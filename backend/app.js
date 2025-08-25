@@ -5,7 +5,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const routes = require('./routes');
-const { initDb } = require('./db/models');
+const { initDb, User } = require('./db/models');
+const seed = require('./seed');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const app = express();
@@ -45,9 +46,16 @@ app.use((err, _req, res, _next) => {
   });
 });
 
-// Only auto-sync in dev to avoid wiping production DB
-if (!isProduction) {
-  initDb();
-}
+// Initialize DB & seed if empty
+(async () => {
+  await initDb();
+  if (isProduction) {
+    const userCount = await User.count();
+    if (userCount === 0) {
+      console.log("🌱 No users found, seeding production DB...");
+      await seed();
+    }
+  }
+})();
 
 module.exports = app;
