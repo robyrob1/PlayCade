@@ -17,9 +17,8 @@ app.use(express.json());
 if (!isProduction) {
   app.use(cors({ origin: true, credentials: true }));
 } else {
- 
   app.use(cors({
-    origin: process.env.FRONTEND_ORIGIN, 
+    origin: process.env.FRONTEND_ORIGIN,
     credentials: true
   }));
 }
@@ -28,7 +27,7 @@ app.use(helmet({ crossOriginResourcePolicy: false }));
 
 app.use(routes);
 
-// 404
+// 404 handler
 app.use((_req, _res, next) => {
   const err = new Error("The requested resource couldn't be found.");
   err.status = 404;
@@ -46,6 +45,9 @@ app.use((err, _req, res, _next) => {
   });
 });
 
-initDb();
+// Only auto-sync in dev to avoid wiping production DB
+if (!isProduction) {
+  initDb();
+}
 
 module.exports = app;
